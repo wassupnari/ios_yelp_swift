@@ -165,6 +165,10 @@
                                                 <constraint firstItem="vE9-2n-1Iz" firstAttribute="leading" secondItem="zx0-Sa-0o1" secondAttribute="leading" constant="16" id="fNR-nW-Xdi"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="onSwitch" destination="Fdh-0J-Gtf" id="qAj-hs-zY5"/>
+                                            <outlet property="switchLabel" destination="vE9-2n-1Iz" id="3j4-YR-OUv"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
