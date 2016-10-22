@@ -29,6 +29,7 @@ class BusinessCell: UITableViewCell {
             categoryLabel.text = business.categories
             distanceLabel.text = business.distance
             ratingsImageView.setImageWith(business.ratingImageURL!)
+            dollarSignLabel.text = "$$"
         }
     }
     
