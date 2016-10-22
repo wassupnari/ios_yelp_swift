@@ -8,12 +8,17 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController {
+class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+
     
+    @IBOutlet weak var tableview: UITableView!
     var businesses: [Business]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableview.delegate = self
+        tableview.dataSource = self
         
         Business.searchWithTerm(term: "Thai", completion: { (businesses: [Business]?, error: Error?) -> Void in
             
@@ -25,6 +30,7 @@ class BusinessesViewController: UIViewController {
                 }
             }
             
+            self.tableview.reloadData()
             }
         )
         
@@ -45,6 +51,27 @@ class BusinessesViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if businesses != nil {
+            return businesses.count
+        } else {
+            return 0
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "BusinessCell", for: indexPath) as! BusinessCell
+        
+        cell.business = businesses[indexPath.row]
+        
+        return cell
+    }
+    
+    //        func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: IndexPath) {
+    //            //repoTableView.deselectRow(at: indexPath, animated: true)
+    //            // do something here
+    //        }
     
     /*
      // MARK: - Navigation
