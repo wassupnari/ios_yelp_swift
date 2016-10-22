@@ -102,6 +102,9 @@
                             <constraint firstItem="VBY-gq-v8E" firstAttribute="top" secondItem="0LC-KN-ij1" secondAttribute="bottom" id="vfY-CE-UJa"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="tableview" destination="0LC-KN-ij1" id="Tth-jb-DOc"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fgb-4b-F1b" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

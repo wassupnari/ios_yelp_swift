@@ -20,6 +20,17 @@ class BusinessCell: UITableViewCell {
     @IBOutlet weak var distanceLabel: UILabel!
     @IBOutlet weak var dollarSignLabel: UILabel!
     
+    var business: Business! {
+        didSet {
+            restaurantNameLabel.text = business.name
+            restaurantImageView.setImageWith(business.imageURL!)
+            reviewsLabel.text = "\(business.reviewCount) Reviews"
+            addressLabel.text = business.address
+            categoryLabel.text = business.categories
+            distanceLabel.text = business.distance
+            ratingsImageView.setImageWith(business.ratingImageURL!)
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
