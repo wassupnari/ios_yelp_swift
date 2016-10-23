@@ -13,11 +13,13 @@ class FiltersViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-
+    var categories: [[String:String]]!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        categories = yelpCategories()
     }
 
     override func didReceiveMemoryWarning() {
@@ -32,6 +34,10 @@ class FiltersViewController: UIViewController {
     
     @IBAction func onSearchClicked(_ sender: AnyObject) {
         dismiss(animated: true, completion: nil)
+    }
+    
+    func yelpCategories() -> [[String:String]] {
+        return [["name": "Name", "code": "Code"]]
     }
     
 
