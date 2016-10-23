@@ -37,6 +37,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         categories = yelpCategories()
         tableView.delegate = self
         tableView.dataSource = self
+        
         // Sectioned tableview
         //tableView.register(SwitchCell.self, forCellReuseIdentifier: CellIdentifier)
         //tableView.register(UITableViewHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: HeaderViewIdentifier)
@@ -91,8 +92,6 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
         
-        print("section id : \(dataForItem[indexPath.section][indexPath.row])")
-        
         cell.switchLabel.text = dataForItem[indexPath.section][indexPath.row]
         //let itemsInSection = data[indexPath.section][1]
         //cell.switchLabel.text = itemsInSection[indexPath.row]
@@ -137,19 +136,23 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     
     
     func yelpCategories() -> [[String:String]] {
-        return [["name": "Name", "code": "Code"],
-                ["name": "Korean", "code": "korean"]]
+        return [["name": "American", "code": "american"],
+                ["name": "French", "code": "french"],
+                ["name": "Japanese", "code": "japanese"],
+                ["name": "Korean", "code": "korean"],
+                ["name": "Mexican", "code": "mexican"],
+                ["name": "Thai", "code": "thai"]]
     }
     
     func createDataForHeader() -> [String] {
-        return ["Deal", "Distance", "Sort by", "Category"]
+        return ["Deal", "Distance", "Sort By", "Category"]
     }
     
     func createDataForItem() -> [[String]] {
-        return [["deal"],
-                ["0.5 miles", "1 mile"],
-                ["Best Match"],
-                ["Thai", "Korean"]]
+        return [["Deal"],
+                ["Auto", "0.3 miles", "1 mile", "5 miles", "20 miles"],
+                ["Best Match", "Distance", "Highest Rated"],
+                ["American", "French", "Japanese", "Korean", "Mexican", "Thai"]]
     }
 
 }
