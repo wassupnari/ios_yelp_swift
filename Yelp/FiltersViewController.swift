@@ -19,16 +19,27 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     
     weak var delegate: FiltersViewControllerDelegate?
     
+    
     var categories: [[String:String]]!
     var switchStates = [Int:Bool]()
+    var dataForHeader: [String]!
+    var dataForItem: [[String]]!
+    
+    // For sectioned tableview
+//    let CellIdentifier = "SwitchCell", HeaderViewIdentifier = "TableViewHeaderView"
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        dataForHeader = createDataForHeader()
+        dataForItem = createDataForItem()
         categories = yelpCategories()
         tableView.delegate = self
         tableView.dataSource = self
+        // Sectioned tableview
+        //tableView.register(SwitchCell.self, forCellReuseIdentifier: CellIdentifier)
+        //tableView.register(UITableViewHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: HeaderViewIdentifier)
     }
 
     override func didReceiveMemoryWarning() {
@@ -59,30 +70,50 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         delegate?.filtersViewController?(filtersViewController: self , didUpdateFilters: filters)
     }
     
-    func yelpCategories() -> [[String:String]] {
-        return [["name": "Name", "code": "Code"],
-        ["name": "Korean", "code": "korean"]]
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return dataForHeader.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if categories != nil {
-            return categories.count
-        } else {
-            return 0
-        }
+        return dataForItem[section].count
     }
     
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        if categories != nil {
+//            return categories.count
+//        } else {
+//            return 0
+//        }
+//    }
+    
+    // MARK: Sectioned item view
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
         
-        cell.switchLabel.text = categories[indexPath.row]["name"]
+        print("section id : \(dataForItem[indexPath.section][indexPath.row])")
+        
+        cell.switchLabel.text = dataForItem[indexPath.section][indexPath.row]
+        //let itemsInSection = data[indexPath.section][1]
+        //cell.switchLabel.text = itemsInSection[indexPath.row]
+//        cell.switchLabel.text = categories[indexPath.row]["name"]
         cell.delegate = self
-        
-        
         cell.onSwitch.isOn = switchStates[indexPath.row] ?? false
-
         
         return cell
+    }
+    
+    // MARK: Header view for sectioned tableview
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: HeaderViewIdentifier)! as UITableViewHeaderFooterView
+        //header.textLabel?.text = data[section][0]
+//        print("header : \(dataForHeader[section])")
+//        header.textLabel?.text = dataForHeader[section]
+        return dataForHeader[section]
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 30
     }
     
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
@@ -103,5 +134,22 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         // Pass the selected object to the new view controller.
     }
     */
+    
+    
+    func yelpCategories() -> [[String:String]] {
+        return [["name": "Name", "code": "Code"],
+                ["name": "Korean", "code": "korean"]]
+    }
+    
+    func createDataForHeader() -> [String] {
+        return ["Deal", "Distance", "Sort by", "Category"]
+    }
+    
+    func createDataForItem() -> [[String]] {
+        return [["deal"],
+                ["0.5 miles", "1 mile"],
+                ["Best Match"],
+                ["Thai", "Korean"]]
+    }
 
 }

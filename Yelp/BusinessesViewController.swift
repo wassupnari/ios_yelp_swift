@@ -107,9 +107,9 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
 //            // If dataItem matches the searchText, return true to include it
 //            return dataString.range(of: searchText, options: .caseInsensitive) != nil
 //        })
-        print("search text : \(searchText)")
+        //print("search text : \(searchText)")
         filteredBusinesses = searchText.isEmpty ? businesses : businesses.filter {(item: Business) -> Bool in
-            print("boolean : \(item.categories?.range(of: searchText, options: .caseInsensitive) != nil)")
+            //print("boolean : \(item.categories?.range(of: searchText, options: .caseInsensitive) != nil)")
             return item.categories?.range(of: searchText, options: .caseInsensitive) != nil
         }
         
