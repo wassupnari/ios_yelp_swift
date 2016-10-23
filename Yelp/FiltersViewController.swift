@@ -8,12 +8,19 @@
 
 import UIKit
 
+@objc protocol FiltersViewControllerDelegate {
+    @objc optional func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String:AnyObject])
+}
+
 class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SwitchCellDelegate {
     
     
     @IBOutlet weak var tableView: UITableView!
     
+    weak var delegate: FiltersViewControllerDelegate?
+    
     var categories: [[String:String]]!
+    var switchStates = [Int:Bool]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +43,20 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     
     @IBAction func onSearchClicked(_ sender: AnyObject) {
         dismiss(animated: true, completion: nil)
+        var filters = [String:AnyObject]()
+        
+        var selectedCategories = [String]()
+        for (row, isSelected) in switchStates {
+            if isSelected {
+                selectedCategories.append(categories[row]["code"]!)
+            }
+        }
+        
+        if selectedCategories.count > 0 {
+            filters["categories"] = selectedCategories as AnyObject?
+        }
+        
+        delegate?.filtersViewController?(filtersViewController: self , didUpdateFilters: filters)
     }
     
     func yelpCategories() -> [[String:String]] {
@@ -57,6 +78,10 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         cell.switchLabel.text = categories[indexPath.row]["name"]
         cell.delegate = self
         
+        
+        cell.onSwitch.isOn = switchStates[indexPath.row] ?? false
+
+        
         return cell
     }
     
@@ -65,7 +90,8 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         
         print("callback invoked")
         
-        
+        // Store switch on/off data from delegate callback
+        switchStates[indexPath.row] = value
     }
 
     /*
