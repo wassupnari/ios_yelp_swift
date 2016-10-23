@@ -25,8 +25,8 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         
         // Searchbar setup
         searchBar.delegate = self
-//        searchController = UISearchController(searchResultsController: nil)
-//        searchController.searchResultsUpdater = self
+        searchBar.sizeToFit()
+        navigationItem.titleView = searchBar
         
         // Tableview setup
         tableview.delegate = self
