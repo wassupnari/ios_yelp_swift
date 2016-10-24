@@ -64,6 +64,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         
         var selectedDeal = false
         var selectedSortBy = -1
+        var selectedDistance = -1.0;
         var selectedCategories = [String]()
         
         var sectionIndex = 0
@@ -76,8 +77,19 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
                     }
                 }
                 break
-            case 1: break
-            
+            case 1:
+                var distance = ""
+                for(row, isSelected) in object {
+                    if isSelected && row != 0 {
+                        distance = dataForItem[1][row]
+                    }
+                }
+                if(distance != "") {
+                    let fullString: [String] = distance.components(separatedBy: " ")
+                    selectedDistance = Double(fullString[0])! * 1609.34
+                    print("distance : \(selectedDistance)")
+                }
+                break
             case 2:
                 for(row, isSelected) in object {
                     if isSelected {
@@ -108,15 +120,20 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
 //            }
 //        }
     
-        
+        // Deal filter
         filters["deal"] = selectedDeal as AnyObject?
         
-        print("sort : \(selectedSortBy)")
+        // Sort by filter
         if selectedSortBy > -1 {
             filters["sort"] = selectedSortBy as AnyObject?
         }
         
+        // Distance filter
+        if selectedDistance > 0 {
+            filters["radius"] = selectedDistance as AnyObject?
+        }
     
+        // Category filter
         if selectedCategories.count > 0 {
             print("has category")
             filters["categories"] = selectedCategories as AnyObject?

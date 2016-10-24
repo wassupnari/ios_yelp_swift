@@ -22,6 +22,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     
     var searchDeal: Bool?
     var searchSort: YelpSortMode?
+    var searchRadius: Double?
     var searchCategories: [String]?
 
     
@@ -143,7 +144,16 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     
     func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
         searchDeal = (filters["deal"] as? Bool)!
-        searchSort = YelpSortMode(rawValue: (filters["sort"] as? Int)!)
+        if (!searchDeal!) {
+            searchDeal = nil
+        }
+        if(filters["sort"] != nil) {
+            searchSort = YelpSortMode(rawValue: (filters["sort"] as? Int)!)
+        }
+        if(filters["radius"] != nil) {
+            searchRadius = filters["radius"] as? Double
+        }
+        //searchRadius = nil
         searchCategories = filters["categories"] as? [String]
         getRestaurantsFromAPI()
     }
@@ -152,10 +162,10 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         
         // Set default keyword as Restaurants
         if self.searchKeyword == nil {
-            self.searchKeyword = "Restaurants"
+            self.searchKeyword = "Restaurant"
         }
         
-        Business.searchWithTerm(term: self.searchKeyword!, sort: searchSort, categories: self.searchCategories, deals: searchDeal, completion: { (businesses: [Business]?, error: Error?) -> Void in
+        Business.searchWithTerm(term: self.searchKeyword!, sort: searchSort, categories: self.searchCategories, deals: searchDeal, radius: self.searchRadius, completion: { (businesses: [Business]?, error: Error?) -> Void in
             
             self.businesses = businesses
             self.tableview.reloadData()
