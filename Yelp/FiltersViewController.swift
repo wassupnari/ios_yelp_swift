@@ -21,6 +21,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     
     
     var categories: [[String:String]]!
+    var sectionedSwitchStates = [[Int:Bool]]()
     var switchStates = [Int:Bool]()
     var dataForHeader: [String]!
     var dataForItem: [[String]]!
@@ -39,6 +40,8 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 60
+        
+        sectionedSwitchStates = initSwitchStates()
         
         // Sectioned tableview
         //tableView.register(SwitchCell.self, forCellReuseIdentifier: CellIdentifier)
@@ -59,14 +62,63 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         dismiss(animated: true, completion: nil)
         var filters = [String:AnyObject]()
         
+        var selectedDeal = false
+        var selectedSortBy = -1
         var selectedCategories = [String]()
-        for (row, isSelected) in switchStates {
-            if isSelected {
-                selectedCategories.append(categories[row]["code"]!)
+        
+        var sectionIndex = 0
+        for (object) in self.sectionedSwitchStates {
+            switch sectionIndex {
+            case 0:
+                for(row, isSelected) in object {
+                    if row == 0 {
+                        selectedDeal = isSelected
+                    }
+                }
+                break
+            case 1: break
+            
+            case 2:
+                for(row, isSelected) in object {
+                    if isSelected {
+                        selectedSortBy = row
+                    }
+                }
+                break
+            case 3:
+                for(row, isSelected) in object {
+                    if isSelected {
+                        selectedCategories.append(categories[row]["code"]!)
+                    }
+                }
+                break
+            default:
+                selectedCategories.removeAll()
+                
             }
+            sectionIndex += 1
         }
         
+        
+        // For Categories
+//        for (row, isSelected) in switchStates {
+//            print("row : \(row)")
+//            if isSelected {
+//                selectedCategories.append(categories[row]["code"]!)
+//            }
+//        }
+    
+        
+        filters["deal"] = selectedDeal as AnyObject?
+        
+        print("sort : \(selectedSortBy)")
+        if selectedSortBy > -1 {
+            filters["sort"] = selectedSortBy as AnyObject?
+        }
+        
+    
         if selectedCategories.count > 0 {
+            print("has category")
             filters["categories"] = selectedCategories as AnyObject?
         }
         
@@ -99,17 +151,14 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         //cell.switchLabel.text = itemsInSection[indexPath.row]
 //        cell.switchLabel.text = categories[indexPath.row]["name"]
         cell.delegate = self
-        cell.onSwitch.isOn = switchStates[indexPath.row] ?? false
+        //cell.onSwitch.isOn = switchStates[indexPath.row] ?? false
+        cell.onSwitch.isOn = sectionedSwitchStates[indexPath.section][indexPath.row] ?? false
         
         return cell
     }
     
     // MARK: Header view for sectioned tableview
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: HeaderViewIdentifier)! as UITableViewHeaderFooterView
-        //header.textLabel?.text = data[section][0]
-//        print("header : \(dataForHeader[section])")
-//        header.textLabel?.text = dataForHeader[section]
         return dataForHeader[section]
     }
     
@@ -120,10 +169,10 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
         let indexPath = tableView.indexPath(for: switchCell)!
         
-        print("callback invoked")
-        
+        print("callback invoked, value : \(value)")
         // Store switch on/off data from delegate callback
-        switchStates[indexPath.row] = value
+        //switchStates[indexPath.row] = value
+        sectionedSwitchStates[indexPath.section][indexPath.row] = value
     }
 
     /*
@@ -155,6 +204,13 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
                 ["Auto", "0.3 miles", "1 mile", "5 miles", "20 miles"],
                 ["Best Match", "Distance", "Highest Rated"],
                 ["American", "French", "Japanese", "Korean", "Mexican", "Thai"]]
+    }
+    
+    func initSwitchStates() -> [[Int:Bool]] {
+        return [[0: false],
+                [0: false, 1: false, 2: false, 3: false, 4: false],
+                [0: false, 1: false, 2: false],
+                [0: false, 1: false, 2: false, 3: false, 4: false, 5: false]]
     }
 
 }
