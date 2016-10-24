@@ -37,6 +37,8 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         categories = yelpCategories()
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 60
         
         // Sectioned tableview
         //tableView.register(SwitchCell.self, forCellReuseIdentifier: CellIdentifier)

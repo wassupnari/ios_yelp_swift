@@ -19,6 +19,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     var filteredBusinesses: [Business]?
     
     var searchController: UISearchController!
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,24 +71,24 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if filteredBusinesses != nil {
-            return filteredBusinesses!.count
-        } else {
-            return 0
-        }
-        
-//        if businesses != nil {
-//            return businesses.count
+//        if filteredBusinesses != nil {
+//            return filteredBusinesses!.count
 //        } else {
 //            return 0
 //        }
+        
+        if businesses != nil {
+            return businesses.count
+        } else {
+            return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BusinessCell", for: indexPath) as! BusinessCell
         
-        //cell.business = businesses[indexPath.row]
-        cell.business = filteredBusinesses?[indexPath.row]
+        cell.business = businesses[indexPath.row]
+        //cell.business = filteredBusinesses?[indexPath.row]
         
         return cell
     }
@@ -98,18 +99,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     //        }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        // When there is no text, filteredData is the same as the original data
-        // When user has entered text into the search box
-        // Use the filter method to iterate over all items in the data array
-        // For each item, return true if the item should be included and false if the
-        // item should NOT be included
-//        filteredData = searchText.isEmpty ? data : data.filter({(dataString: String) -> Bool in
-//            // If dataItem matches the searchText, return true to include it
-//            return dataString.range(of: searchText, options: .caseInsensitive) != nil
-//        })
-        //print("search text : \(searchText)")
         filteredBusinesses = searchText.isEmpty ? businesses : businesses.filter {(item: Business) -> Bool in
-            //print("boolean : \(item.categories?.range(of: searchText, options: .caseInsensitive) != nil)")
             return item.categories?.range(of: searchText, options: .caseInsensitive) != nil
         }
         
@@ -145,9 +135,11 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
         let categories = filters["categories"] as? [String]
         
+        print("call back from filters, categories : \(categories)")
         Business.searchWithTerm(term: "Restaurants", sort: nil, categories: categories, deals: nil, completion: { (businesses: [Business]?, error: Error?) -> Void in
             
             self.businesses = businesses
+            self.filteredBusinesses = businesses
             self.tableview.reloadData()
             }
         )
