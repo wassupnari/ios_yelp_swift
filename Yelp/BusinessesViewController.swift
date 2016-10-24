@@ -16,9 +16,11 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     
     
     var businesses: [Business]!
-    var filteredBusinesses: [Business]?
     
     var searchController: UISearchController!
+    var searchKeyword: String?
+    
+    var searchCategories: [String]?
 
     
     override func viewDidLoad() {
@@ -47,7 +49,6 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
                     print(business.address!)
                 }
             }
-            self.filteredBusinesses = self.businesses
             self.tableview.reloadData()
             }
         )
@@ -88,7 +89,6 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         let cell = tableView.dequeueReusableCell(withIdentifier: "BusinessCell", for: indexPath) as! BusinessCell
         
         cell.business = businesses[indexPath.row]
-        //cell.business = filteredBusinesses?[indexPath.row]
         
         return cell
     }
@@ -99,11 +99,10 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     //        }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        filteredBusinesses = searchText.isEmpty ? businesses : businesses.filter {(item: Business) -> Bool in
-            return item.categories?.range(of: searchText, options: .caseInsensitive) != nil
-        }
-        
-        tableview.reloadData()
+//        filteredBusinesses = searchText.isEmpty ? businesses : businesses.filter {(item: Business) -> Bool in
+//            return item.categories?.range(of: searchText, options: .caseInsensitive) != nil
+//        }
+        self.searchKeyword = searchText
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
@@ -120,6 +119,14 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         searchBar.showsCancelButton = false
     }
     
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if (searchBar.text != nil) {
+            searchKeyword = searchBar.text!
+            getRestaurantsFromAPI()
+        }
+        searchBar.endEditing(true)
+    }
+    
      // MARK: - Navigation
      
      // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -133,13 +140,20 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
      }
     
     func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
-        let categories = filters["categories"] as? [String]
+        searchCategories = filters["categories"] as? [String]
+        getRestaurantsFromAPI()
+    }
+    
+    func getRestaurantsFromAPI() {
         
-        print("call back from filters, categories : \(categories)")
-        Business.searchWithTerm(term: "Restaurants", sort: nil, categories: categories, deals: nil, completion: { (businesses: [Business]?, error: Error?) -> Void in
+        // Set default keyword as Restaurants
+        if self.searchKeyword == nil {
+            self.searchKeyword = "Restaurants"
+        }
+        
+        Business.searchWithTerm(term: self.searchKeyword!, sort: nil, categories: self.searchCategories, deals: nil, completion: { (businesses: [Business]?, error: Error?) -> Void in
             
             self.businesses = businesses
-            self.filteredBusinesses = businesses
             self.tableview.reloadData()
             }
         )
