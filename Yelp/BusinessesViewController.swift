@@ -152,8 +152,9 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         }
         if(filters["radius"] != nil) {
             searchRadius = filters["radius"] as? Double
+        } else {
+            searchRadius = nil
         }
-        //searchRadius = nil
         searchCategories = filters["categories"] as? [String]
         getRestaurantsFromAPI()
     }
